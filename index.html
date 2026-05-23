@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>指鹿為馬思辨小學堂 - 移動端 UI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            50: '#FCFAF2',
+                            100: '#F5EFE0',
+                            200: '#EBDCBE',
+                            300: '#DCC395',
+                        },
+                        mint: {
+                            100: '#E6F4F0',
+                            200: '#C7E8DE',
+                            500: '#5FB395',
+                            600: '#4A9C7E',
+                            700: '#387D64',
+                        },
+                        terracotta: {
+                            100: '#FDF0EC',
+                            205: '#F9DCD2',
+                            500: '#E07A5F',
+                            600: '#C96449',
+                        },
+                        amberGold: {
+                            100: '#FFFBEB',
+                            200: '#FEF3C7',
+                            500: '#F59E0B',
+                        }
+                    },
+                    borderRadius: {
+                        'xl-cute': '1.25rem',
+                        '2xl-cute': '2rem',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', 'Kosugi Maru', sans-serif;
+            background-color: #F3ECE0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 滾動條美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FCFAF2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C7E8DE;
+            border-radius: 10px;
+        }
+
+        /* 可愛澎澎陰影效果 */
+        .bubble-shadow {
+            box-shadow: 0 8px 0px 0px #D8C3A5;
+        }
+        .btn-bubble {
+            box-shadow: 0 4px 0px 0px rgba(0,0,0,0.1);
+            transition: all 0.1s ease;
+        }
+        .btn-bubble:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0px 0px rgba(0,0,0,0.1);
+        }
+        
+        /* 雲朵漂浮動畫 */
+        @keyframes float {
+            0% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-6px) translateX(4px); }
+            100% { transform: translateY(0px) translateX(0px); }
+        }
+        .floating-cloud {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4">
+
+    <!-- 手機模擬容器 -->
+    <div class="relative w-full max-w-md h-[844px] sm:h-[812px] bg-cream-50 sm:rounded-[40px] shadow-2xl overflow-hidden border-8 border-amber-950/20 flex flex-col">
+        
+        <!-- 模擬頂部狀態列 -->
+        <div class="px-6 pt-3 pb-2 flex justify-between items-center text-xs text-amber-950/40 select-none">
+            <span class="font-bold">14:10 🦌 ➔ 🐎</span>
+            <div class="flex items-center space-x-1.5">
+                <span>宮廷網路 5G</span>
+                <span>100%🔋</span>
+            </div>
+        </div>
+
+        <!-- 頂部導航標題 -->
+        <header class="px-5 py-3 bg-cream-100 border-b-2 border-cream-200 flex items-center justify-between relative">
+            <div class="flex items-center space-x-2">
+                <!-- 可愛秦代小冠冕 Logo -->
+                <div class="w-10 h-10 bg-terracotta-500 rounded-full flex items-center justify-center text-white text-xl shadow-inner font-black">
+                    👑
+                </div>
+                <div>
+                    <h1 class="text-base font-black text-amber-950 tracking-wide">指鹿為馬思辨小學堂</h1>
+                    <p class="text-[10px] text-amber-900/70 font-bold flex items-center">
+                        <span class="inline-block w-2 h-2 rounded-full bg-terracotta-500 mr-1 animate-pulse"></span>
+                        當前單元：史記．秦始皇本紀
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 可愛問號按鈕 -->
+            <button onclick="toggleHelpModal(true)" class="w-9 h-9 bg-terracotta-100 hover:bg-terracotta-205 border-2 border-terracotta-500/20 text-terracotta-600 rounded-full flex items-center justify-center font-bold text-lg btn-bubble">
+                ？
+            </button>
+            
+            <!-- 漂浮背景小雲朵 -->
+            <div class="absolute right-16 top-1 floating-cloud opacity-25 pointer-events-none">
+                <svg class="w-8 h-5 text-mint-500 fill-current" viewBox="0 0 24 16"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            </div>
+        </header>
+
+        <!-- 主要內容滾動區 -->
+        <main class="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-20 relative">
+            
+            <!-- ================= TAB 1: 結構樹 ================= -->
+            <div id="page-structure" class="space-y-4 page-content">
+                <div class="bg-terracotta-100 rounded-2xl-cute p-4 border-2 border-terracotta-205 relative overflow-hidden">
+                    <span class="text-[10px] bg-terracotta-500 text-white font-bold px-2 py-0.5 rounded-full">思辨導讀</span>
+                    <h2 class="text-base font-black text-amber-950 mt-2">一場驚心動魄的政治實驗 🔬</h2>
+                    <p class="text-xs text-amber-900/80 mt-1 leading-relaxed">「指鹿為馬」不是一個愚蠢的認知笑話，而是趙高用來測試、篩選並清洗朝廷官員的「權力邏輯模型」。點擊展開看其邏輯架構！</p>
+                </div>
+
+                <!-- 邏輯結構樹 -->
+                <div class="space-y-3 relative pl-3 border-l-2 border-dashed border-terracotta-500/30">
+                    
+                    <!-- 核心動機 -->
+                    <div class="relative">
+                        <div class="absolute -left-[19px] top-5 w-2.5 h-2.5 rounded-full bg-terracotta-500 border-2 border-cream-50"></div>
+                        <div onclick="toggleCard('card-topic')" class="bg-white hover:bg-cream-100/50 p-3.5 rounded-xl-cute border-2 border-amber-950/10 cursor-pointer shadow-sm transition-all">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-terracotta-600 bg-terracotta-100 px-2 py-0.5 rounded">🎯 核心動機</span>
+                                <span id="card-topic-icon" class="text-xs text-amber-955/40">展開 ▾</span>
+                            </div>
+                            <p class="text-sm font-black text-amber-950 mt-1.5">趙高欲為亂，排除異己以奪取大權</p>
+                            <div id="card-topic-detail" class="hidden mt-3 pt-2.5 border-t border-dashed border-amber-950/10 text-xs text-amber-900/80 leading-relaxed">
+                                趙高圖謀篡位或發動政變，但害怕滿朝文武百官不聽從命令。因此，他必須在「起事之前」徹底摸清並清洗不順從的臣子。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 前提一 -->
+                    <div class="relative">
+                        <div class="absolute -left-[19px] top-5 w-2.5 h-2.5 rounded-full bg-amberGold-500 border-2 border-cream-50"></div>
+                        <div onclick="toggleCard('card-premise1')" class="bg-white hover:bg-cream-100/50 p-3.5 rounded-xl-cute border-2 border-amber-950/10 cursor-pointer shadow-sm transition-all">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-amber-850 bg-amberGold-100 px-2 py-0.5 rounded">💡 核心假設一</span>
+                                <span id="card-premise1-icon" class="text-xs text-amber-955/40">展開 ▾</span>
+                            </div>
+                            <p class="text-sm font-black text-amber-950 mt-1.5">強權威脅可以壓制客觀事實</p>
+                            <div id="card-premise1-detail" class="hidden mt-3 pt-2.5 border-t border-dashed border-amber-950/10 text-xs text-amber-900/80 leading-relaxed">
+                                趙高深知，在足夠強大的政治生命威脅下，人類的「自我保存本能」會超越對「客觀真相」的堅持。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 前提二 -->
+                    <div class="relative">
+                        <div class="absolute -left-[19px] top-5 w-2.5 h-2.5 rounded-full bg-amberGold-500 border-2 border-cream-50"></div>
+                        <div onclick="toggleCard('card-premise2')" class="bg-white hover:bg-cream-100/50 p-3.5 rounded-xl-cute border-2 border-amber-950/10 cursor-pointer shadow-sm transition-all">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-amber-850 bg-amberGold-100 px-2 py-0.5 rounded">💡 核心假設二</span>
+                                <span id="card-premise2-icon" class="text-xs text-amber-955/40">展開 ▾</span>
+                            </div>
+                            <p class="text-sm font-black text-amber-950 mt-1.5">極度荒謬的前提是最好的「忠誠測試儀」</p>
+                            <div id="card-premise2-detail" class="hidden mt-3 pt-2.5 border-t border-dashed border-amber-950/10 text-xs text-amber-900/80 leading-relaxed">
+                                測試忠誠不能用合理的事。正因為「指鹿為馬」在生物認知上是100%錯誤的，誰願意跟著睜眼說瞎話，誰就是願意放棄個人底線、徹底屈服服從的絕對親信。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 實驗過程 -->
+                    <div class="relative">
+                        <div class="absolute -left-[19px] top-5 w-2.5 h-2.5 rounded-full bg-mint-500 border-2 border-cream-50"></div>
+                        <div onclick="toggleCard('card-evidence')" class="bg-white hover:bg-cream-100/50 p-3.5 rounded-xl-cute border-2 border-amber-950/10 cursor-pointer shadow-sm transition-all">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-mint-700 bg-mint-100 px-2 py-0.5 rounded">📜 實驗與分流</span>
+                                <span id="card-evidence-icon" class="text-xs text-amber-955/40">展開 ▾</span>
+                            </div>
+                            <p class="text-sm font-black text-amber-950 mt-1.5">持鹿獻帝，將群臣言論分類</p>
+                            <div id="card-evidence-detail" class="hidden mt-3 pt-2.5 border-t border-dashed border-amber-955/10 text-xs text-amber-900/80 leading-relaxed">
+                                獻鹿為馬後，觀察群臣的三種反應：<br>
+                                1. <strong>沉默不言</strong>：明哲保身，但缺乏實質忠誠。<br>
+                                2. <strong>阿順言馬</strong>：甘願放棄底線，是可收買的鷹犬。<br>
+                                3. <strong>直言為鹿</strong>：堅持事實，是潛在的不安定反對者。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 清洗與控制 -->
+                    <div class="relative">
+                        <div class="absolute -left-[19px] top-5 w-2.5 h-2.5 rounded-full bg-red-400 border-2 border-cream-50"></div>
+                        <div onclick="toggleCard('card-conclusion')" class="bg-white hover:bg-cream-100/50 p-3.5 rounded-xl-cute border-2 border-amber-955/10 cursor-pointer shadow-sm transition-all">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded">🏁 最終結果</span>
+                                <span id="card-conclusion-icon" class="text-xs text-amber-955/40">展開 ▾</span>
+                            </div>
+                            <p class="text-sm font-black text-amber-950 mt-1.5">除掉「言鹿者」，朝廷陷入絕對恐怖</p>
+                            <div id="card-conclusion-detail" class="hidden mt-3 pt-2.5 border-t border-dashed border-amber-955/10 text-xs text-amber-900/80 leading-relaxed">
+                                趙高暗中使用法律陷害那些直言「是鹿」的官員。殺雞儆猴之後，剩下的臣子因為恐懼，徹底喪失了說真話的勇氣，趙高從而完全控制了朝廷言論與決策。
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- ================= TAB 2: 思辨核心 ================= -->
+            <div id="page-core" class="hidden space-y-4 page-content">
+                
+                <!-- 垂直推導流程圖 -->
+                <div class="bg-amberGold-100 p-4 rounded-2xl-cute border-2 border-amberGold-200">
+                    <h3 class="text-xs font-bold text-amber-800 tracking-wider text-center uppercase mb-3.5">⚔️ 趙高的「設驗」邏輯清洗流程</h3>
+                    
+                    <div class="flex flex-col items-center space-y-2">
+                        <!-- 動機 -->
+                        <div class="bg-white border-2 border-amber-950/10 px-4 py-2 rounded-xl-cute text-center max-w-[260px] w-full">
+                            <span class="text-[9px] text-terracotta-500 font-bold block">1. 核心動機</span>
+                            <span class="text-xs font-black text-amber-950">趙高欲為亂，恐群臣不聽</span>
+                        </div>
+                        
+                        <!-- 箭頭 -->
+                        <svg class="w-4 h-4 text-amberGold-500 fill-current" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+
+                        <!-- 測試 -->
+                        <div class="bg-white border-2 border-amber-950/10 px-4 py-2 rounded-xl-cute text-center max-w-[260px] w-full">
+                            <span class="text-[9px] text-amber-500 font-bold block">2. 荒謬前提（設驗）</span>
+                            <span class="text-xs font-black text-amber-950">持「鹿」獻二世，指為「馬」</span>
+                        </div>
+
+                        <!-- 箭頭 -->
+                        <svg class="w-4 h-4 text-amberGold-500 fill-current" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+
+                        <!-- 篩選 -->
+                        <div class="bg-white border-2 border-amber-950/10 px-4 py-2.5 rounded-xl-cute text-center max-w-[260px] w-full">
+                            <span class="text-[9px] text-mint-600 font-bold block">3. 言論分流</span>
+                            <div class="flex justify-around text-[10px] font-black mt-1 text-amber-950">
+                                <span class="bg-gray-100 px-1.5 py-0.5 rounded">或默 (保命)</span>
+                                <span class="bg-mint-100 px-1.5 py-0.5 rounded text-mint-700">或言馬 (阿順)</span>
+                                <span class="bg-red-100 px-1.5 py-0.5 rounded text-red-600">或言鹿 (異己)</span>
+                            </div>
+                        </div>
+
+                        <!-- 箭頭 -->
+                        <svg class="w-4 h-4 text-amberGold-500 fill-current" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+
+                        <!-- 控制 -->
+                        <div class="bg-terracotta-500 text-white px-4 py-2 rounded-xl-cute text-center max-w-[260px] w-full shadow-sm">
+                            <span class="text-[9px] text-terracotta-100 font-bold block">4. 邏輯清洗結果</span>
+                            <span class="text-xs font-black">陰中言鹿者 ➔ 群臣皆畏高</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 經典古文互動閱讀器 -->
+                <div class="bg-white rounded-2xl-cute border-2 border-amber-950/10 p-4 shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[10px] bg-mint-100 text-mint-700 font-bold px-2 py-0.5 rounded">📜 《史記·秦始皇本紀》</span>
+                        <span class="text-[10px] text-amber-900/50 font-bold">💡 點擊虛線字看白話思辨</span>
+                    </div>
+
+                    <!-- 古文原文 -->
+                    <div class="text-amber-950 text-sm leading-8 font-serif tracking-wide text-justify">
+                        趙高欲為亂，恐群臣不聽，乃先
+                        <span onclick="showTranslation('設驗', '設立試驗、進行測試，用以試探群臣的態度。在政治學中，這是一種強迫他人表態的極端實驗。')" class="underline decoration-wavy decoration-mint-500 font-black cursor-pointer text-mint-700 bg-mint-100/30 px-1 rounded hover:bg-mint-100/60">設驗</span>
+                        ，持鹿獻於二世，曰：「馬也。」二世笑曰：「丞相誤邪？謂鹿為馬。」問左右，左右或默，或言馬以
+                        <span onclick="showTranslation('阿順', '阿諛奉承、順從討好。指臣子為了迎合權臣，不惜扭曲客觀事實，選擇謊言。')" class="underline decoration-wavy decoration-amberGold-500 font-black cursor-pointer text-amber-800 bg-amberGold-100/30 px-1 rounded hover:bg-amberGold-100/60">阿順</span>
+                        趙高，或言鹿。高因
+                        <span onclick="showTranslation('陰中...以法', '在暗中、用卑劣的手段陷害那些說實話的官員，並套上莫須有的法律罪名將其清除。')" class="underline decoration-wavy decoration-terracotta-500 font-black cursor-pointer text-terracotta-600 bg-terracotta-100/30 px-1 rounded hover:bg-terracotta-205">陰中</span>
+                        諸言鹿者以法。後群臣皆畏高。
+                    </div>
+
+                    <!-- 互動翻譯解說面板 -->
+                    <div id="translation-card" class="hidden mt-4 p-3 bg-cream-100 border-2 border-dashed border-mint-500/30 rounded-xl-cute transition-all">
+                        <div class="flex justify-between items-center mb-1">
+                            <span id="trans-word" class="text-xs font-black text-mint-700">字詞：</span>
+                            <button onclick="closeTranslation()" class="text-xs text-amber-955/40 hover:text-amber-950">關閉 ✕</button>
+                        </div>
+                        <p id="trans-text" class="text-xs text-amber-900/80 leading-relaxed font-bold">載入中...</p>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ================= TAB 3: 思辨工具 ================= -->
+            <div id="page-tools" class="hidden space-y-4 page-content">
+                
+                <!-- 邏輯謬誤檢測機 -->
+                <div class="bg-white rounded-2xl-cute border-2 border-amber-950/10 p-4 shadow-sm">
+                    <div class="flex items-center space-x-2 mb-3">
+                        <span class="text-xl">🤖</span>
+                        <h3 class="text-sm font-black text-amber-950">強權下的邏輯謬誤檢測機</h3>
+                    </div>
+                    <p class="text-xs text-amber-900/60 mb-3">當趙高指鹿為馬時，群臣與旁觀者的言論犯了哪些經典的非形式邏輯謬誤？</p>
+                    
+                    <!-- 謬誤選項 -->
+                    <div class="space-y-2">
+                        <button onclick="detectFallacy(1)" class="w-full text-left p-2.5 text-xs bg-cream-100 hover:bg-mint-100/50 border border-amber-950/10 rounded-lg font-bold text-amber-950 flex justify-between items-center transition-all">
+                            <span>💬 「朝廷上大半的人都說這是馬，那它肯定就是馬！」</span>
+                            <span class="text-amber-900/50">分析 ➔</span>
+                        </button>
+                        <button onclick="detectFallacy(2)" class="w-full text-left p-2.5 text-xs bg-cream-100 hover:bg-mint-100/50 border border-amber-950/10 rounded-lg font-bold text-amber-950 flex justify-between items-center transition-all">
+                            <span>💬 「如果我不說這是馬，我也會被趙高用法律害死，所以這一定是馬！」</span>
+                            <span class="text-amber-900/50">分析 ➔</span>
+                        </button>
+                        <button onclick="detectFallacy(3)" class="w-full text-left p-2.5 text-xs bg-cream-100 hover:bg-mint-100/50 border border-amber-950/10 rounded-lg font-bold text-amber-950 flex justify-between items-center transition-all">
+                            <span>💬 「趙高是權傾朝野的當朝丞相，他說的話怎麼可能會有錯？」</span>
+                            <span class="text-amber-900/50">分析 ➔</span>
+                        </button>
+                    </div>
+
+                    <!-- 謬誤分析面板 -->
+                    <div id="fallacy-result" class="hidden mt-4 p-3.5 bg-mint-100 rounded-xl-cute border-2 border-mint-500/20">
+                        <h4 id="fallacy-title" class="text-xs font-black text-mint-700">檢測結果：</h4>
+                        <p id="fallacy-desc" class="text-xs text-amber-900/80 mt-1.5 leading-relaxed font-bold">說明...</p>
+                    </div>
+                </div>
+
+                <!-- 互動思辨挑戰賽 -->
+                <div class="bg-white rounded-2xl-cute border-2 border-amber-950/10 p-4 shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl">🏆</span>
+                            <h3 class="text-sm font-black text-amber-950">指鹿為馬思辨賽</h3>
+                        </div>
+                        <span class="text-[10px] bg-amberGold-200 text-amber-800 font-extrabold px-1.5 py-0.5 rounded-full">+15 積分</span>
+                    </div>
+                    
+                    <p class="text-xs font-bold text-amber-900 mb-3">【思辨題】當趙高提出「鹿為馬」這類違反常理的主張時，群臣面臨生死威脅被迫屈服。在邏輯論證中，趙高主要是使用了哪種非理性的手段？</p>
+                    
+                    <!-- 選項 -->
+                    <div class="space-y-2">
+                        <button onclick="answerQuiz(this, false)" class="quiz-option w-full text-left p-2.5 text-xs bg-cream-100 hover:bg-cream-200/50 border border-amber-955/10 rounded-lg font-bold text-amber-950 transition-all">
+                            A) 訴諸感性：試圖激發胡亥皇帝與群臣對馬兒的憐愛與溫情
+                        </button>
+                        <button onclick="answerQuiz(this, true)" class="quiz-option w-full text-left p-2.5 text-xs bg-cream-100 hover:bg-cream-200/50 border border-amber-955/10 rounded-lg font-bold text-amber-950 transition-all">
+                            B) 訴諸強權（恃力論證）：藉由潛在的暴力和生命威脅，逼使對方違心接受毫無道理的前提
+                        </button>
+                        <button onclick="answerQuiz(this, false)" class="quiz-option w-full text-left p-2.5 text-xs bg-cream-100 hover:bg-cream-200/50 border border-amber-955/10 rounded-lg font-bold text-amber-950 transition-all">
+                            C) 同義反覆：藉由精妙的生物學論證，證明秦代的鹿與馬是同一個祖先
+                        </button>
+                    </div>
+
+                    <div id="quiz-feedback" class="hidden mt-3 text-xs font-bold text-center"></div>
+                </div>
+
+            </div>
+
+
+            <!-- ================= TAB 4: 我的筆記 ================= -->
+            <div id="page-notes" class="hidden space-y-4 page-content">
+                
+                <!-- 筆記編輯器 -->
+                <div class="bg-white rounded-2xl-cute border-2 border-amber-950/10 p-4 shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xl">✍️</span>
+                            <h3 class="text-sm font-black text-amber-950">秦廷政治博弈筆記</h3>
+                        </div>
+                        <span class="text-[10px] text-amber-900/40">自動存檔</span>
+                    </div>
+
+                    <!-- 筆記可愛印章 -->
+                    <div class="flex space-x-2 mb-3">
+                        <span class="text-xs text-amber-900/60 self-center font-bold">蓋上印章:</span>
+                        <button onclick="addStamp('🧠 深度思考')" class="bg-mint-100 hover:bg-mint-200 text-mint-800 text-xs px-2.5 py-1 rounded-full font-bold btn-bubble">🧠 深度思考</button>
+                        <button onclick="addStamp('🛑 權力警示')" class="bg-terracotta-100 hover:bg-terracotta-205 text-terracotta-700 text-xs px-2.5 py-1 rounded-full font-bold btn-bubble">🛑 權力警示</button>
+                    </div>
+
+                    <textarea id="note-input" rows="4" class="w-full p-3 bg-cream-100 border-2 border-dashed border-amber-955/20 rounded-xl-cute text-xs text-amber-955 focus:outline-none focus:border-terracotta-500 font-bold" placeholder="在此記下您對「資訊垄断」與「指鹿為馬」的思考吧..."></textarea>
+                    
+                    <button onclick="saveNote()" class="mt-3 w-full py-2.5 bg-terracotta-500 hover:bg-terracotta-600 text-white font-black text-xs rounded-xl-cute btn-bubble">
+                        存入思辨檔案 💾
+                    </button>
+                </div>
+
+                <!-- 已存筆記列表 -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-black text-amber-900/80 px-1">🗂 思辨竹簡存檔</h3>
+                    <div id="notes-list" class="space-y-2">
+                        <!-- 系統預設經典筆記 -->
+                        <div class="bg-amberGold-100 p-3.5 rounded-xl-cute border border-amberGold-200 relative overflow-hidden">
+                            <div class="absolute right-2 top-2 text-[10px] bg-amberGold-200 text-amber-900 px-1.5 py-0.5 rounded-full font-black">🧠 深度思考</div>
+                            <p class="text-xs text-amber-950 font-bold leading-relaxed mt-2">
+                                趙高的「指鹿為馬」完全是一場「資訊操弄與行為制約」的博弈。當一個社會中，荒謬的前提被所有人默許和附和時，真相就徹底失去了生存的空間。趙高消滅言鹿者，本質上是在建立一個純粹基於「恐懼與服從」的權力系統。
+                            </p>
+                            <span class="block text-[10px] text-amber-900/40 mt-2">導師推薦筆記庫</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- 幫助說明彈窗 -->
+        <div id="help-modal" class="hidden absolute inset-0 bg-amber-950/40 backdrop-blur-sm z-30 flex justify-center items-center p-6">
+            <div class="bg-white w-full max-w-xs rounded-3xl-cute border-4 border-terracotta-205 p-5 shadow-2xl relative">
+                <button onclick="toggleHelpModal(false)" class="absolute right-4 top-4 w-7 h-7 bg-cream-100 text-amber-950 rounded-full font-bold text-xs flex items-center justify-center border hover:bg-cream-200">✕</button>
+                
+                <div class="text-center space-y-3 mt-2">
+                    <span class="text-4xl">🦌</span>
+                    <h3 class="text-base font-black text-amber-950">指鹿為馬思辨指南</h3>
+                    <p class="text-xs text-amber-800/80 leading-relaxed font-bold">
+                        歡迎來到秦廷的核心思辨區！我們將藉由這堂課，剖析歷史中最著名的「心理與政治操控」：
+                    </p>
+                    <ul class="text-left text-xs text-amber-800/80 space-y-1.5 list-disc list-inside font-bold bg-cream-100 p-3 rounded-xl-cute border border-cream-200">
+                        <li>在「結構樹」看清趙高的驚人陰謀</li>
+                        <li>點擊「核心思辨」字詞看字義剖析</li>
+                        <li>用「謬誤檢測」找出邏輯漏洞</li>
+                        <li>在挑戰賽中檢驗你的政治智慧</li>
+                    </ul>
+                    <button onclick="toggleHelpModal(false)" class="w-full py-2 bg-terracotta-500 hover:bg-terracotta-600 text-white font-black text-xs rounded-xl-cute btn-bubble">
+                        開始探索真相！
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 自訂 Toast 提示框 -->
+        <div id="custom-toast" class="hidden absolute top-16 left-1/2 transform -translate-x-1/2 bg-amber-950/90 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg z-50 flex items-center space-x-1">
+            <span id="toast-icon">✨</span>
+            <span id="toast-msg">已儲存！</span>
+        </div>
+
+        <!-- 手機版底部導航列 -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t-2 border-cream-200 py-2.5 px-4 flex justify-around items-center z-20">
+            <!-- Tab 1: 結構 -->
+            <button onclick="switchTab('structure')" id="nav-structure" class="nav-btn flex flex-col items-center space-y-0.5 text-terracotta-500 font-black">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.4z"/></svg>
+                <span class="text-[10px]">政治結構</span>
+            </button>
+
+            <!-- Tab 2: 核心 -->
+            <button onclick="switchTab('core')" id="nav-core" class="nav-btn flex flex-col items-center space-y-0.5 text-amber-955/40 font-bold hover:text-terracotta-500">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.1-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.35-.75-2-1zM3 18.5V7c1.1-.35 2.3-.5 3.5-.5 1.35 0 2.8.25 4 .75v11.5c-1.2-.5-2.65-.75-4-.75-1.2 0-2.4.15-3.5.5zm18 0c-1.1-.35-2.3-.5-3.5-.5-1.35 0-2.8.25-4 .75V7.25c1.2-.5 2.65-.75 4-.75 1.2 0 2.4.15 3.5.5v11.5z"/></svg>
+                <span class="text-[10px]">設驗原文</span>
+            </button>
+
+            <!-- Tab 3: 工具 -->
+            <button onclick="switchTab('tools')" id="nav-tools" class="nav-btn flex flex-col items-center space-y-0.5 text-amber-955/40 font-bold hover:text-terracotta-500">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                <span class="text-[10px]">邏輯謬誤</span>
+            </button>
+
+            <!-- Tab 4: 筆記 -->
+            <button onclick="switchTab('notes')" id="nav-notes" class="nav-btn flex flex-col items-center space-y-0.5 text-amber-955/40 font-bold hover:text-terracotta-500">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                <span class="text-[10px]">思辨筆記</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <!-- 邏輯腳本處理 -->
+    <script>
+        // 1. Tab 切換功能
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.add('hidden');
+            });
+            document.getElementById(`page-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-terracotta-500', 'font-black');
+                btn.classList.add('text-amber-955/40', 'font-bold');
+            });
+            
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            activeNav.classList.remove('text-amber-955/40', 'font-bold');
+            activeNav.classList.add('text-terracotta-500', 'font-black');
+        }
+
+        // 2. 卡片摺疊面板
+        function toggleCard(cardId) {
+            const detail = document.getElementById(`${cardId}-detail`);
+            const icon = document.getElementById(`${cardId}-icon`);
+            if (detail.classList.contains('hidden')) {
+                detail.classList.remove('hidden');
+                icon.innerText = '收起 ▴';
+            } else {
+                detail.classList.add('hidden');
+                icon.innerText = '展開 ▾';
+            }
+        }
+
+        // 3. 古文解說卡片
+        function showTranslation(word, text) {
+            const card = document.getElementById('translation-card');
+            const transWord = document.getElementById('trans-word');
+            const transText = document.getElementById('trans-text');
+            
+            transWord.innerText = `💡 剖析：【${word}】`;
+            transText.innerText = text;
+            card.classList.remove('hidden');
+        }
+
+        function closeTranslation() {
+            document.getElementById('translation-card').classList.add('hidden');
+        }
+
+        // 4. 邏輯謬誤檢測機
+        function detectFallacy(type) {
+            const resultBox = document.getElementById('fallacy-result');
+            const title = document.getElementById('fallacy-title');
+            const desc = document.getElementById('fallacy-desc');
+
+            resultBox.classList.remove('hidden');
+
+            if (type === 1) {
+                title.innerText = '🤖 檢測結果：訴諸大眾謬誤 (Appeal to Popularity)';
+                desc.innerText = '「大家都說是馬」並不能改變客觀事實上「它是鹿」的生物特徵。但在政治極權環境中，多數人的共識往往是出於集體自保的「被迫妥協」，而非對客觀事實的發現。';
+            } else if (type === 2) {
+                title.innerText = '🤖 檢測結果：訴諸強權與訴諸後果 (Appeal to Force / Consequences)';
+                desc.innerText = '臣子在權力壓迫下把鹿說成馬，是因為「承認這是鹿會帶來死亡後果」。邏輯學上，某個結論的真假，與「承認或不承認該結論的後果」毫無客觀因果關係。這正是恃力論證的殘酷之處。';
+            } else if (type === 3) {
+                title.innerText = '🤖 檢測結果：不當訴諸權威 (Appeal to Misleading Authority)';
+                desc.innerText = '因為趙高地位崇高（丞相），所以他說什麼都對。這忽視了「生物學分類」與「政治權力」是完全不同範疇的事實，是利用權勢篡奪客觀真相。';
+            }
+        }
+
+        // 5. 互動小挑戰
+        let quizAnswered = false;
+        function answerQuiz(btn, isCorrect) {
+            if (quizAnswered) return;
+
+            const feedback = document.getElementById('quiz-feedback');
+            
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.add('opacity-50');
+            });
+            btn.classList.remove('opacity-50');
+
+            if (isCorrect) {
+                btn.classList.remove('bg-cream-100');
+                btn.classList.add('bg-mint-200', 'border-mint-500');
+                feedback.innerHTML = '🎉 邏輯分析正確！<br><span class="text-[11px] font-normal text-amber-900/80">「恃力論證」是藉由肉體威脅或政治制裁強迫對方低頭。趙高就是利用這個原理強迫群臣在真理與生存中二選一，以此完成思想清洗。</span>';
+                feedback.className = 'mt-3 text-xs font-bold text-mint-750 block';
+                showToast('✨ 挑戰成功！獲得 15 積分！');
+            } else {
+                btn.classList.remove('bg-cream-100');
+                btn.classList.add('bg-terracotta-205', 'border-terracotta-500');
+                feedback.innerHTML = '❌ 可惜選錯囉！再思考一下！<br><span class="text-[11px] font-normal text-amber-900/80">提示：群臣不是分不清鹿馬，而是因為趙高「陰中諸言鹿者以法」的政治威脅而被迫說謊。</span>';
+                feedback.className = 'mt-3 text-xs font-bold text-terracotta-600 block';
+                showToast('😢 答錯了，請再想想！');
+            }
+            quizAnswered = true;
+        }
+
+        // 6. 蓋上筆記印章
+        function addStamp(stampText) {
+            const input = document.getElementById('note-input');
+            input.value = `[${stampText}] ` + input.value;
+            input.focus();
+            showToast(`已貼上「${stampText}」標籤！`);
+        }
+
+        // 7. 儲存筆記
+        function saveNote() {
+            const input = document.getElementById('note-input');
+            const text = input.value.trim();
+            if (!text) {
+                showToast('❌ 請寫一點內容再存檔喔！');
+                return;
+            }
+
+            const notesList = document.getElementById('notes-list');
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const bgClasses = ['bg-mint-100/60', 'bg-terracotta-100/60', 'bg-amberGold-100'];
+            const randomBg = bgClasses[Math.floor(Math.random() * bgClasses.length)];
+
+            const noteNode = document.createElement('div');
+            noteNode.className = `${randomBg} p-3.5 rounded-xl-cute border border-amber-950/10 relative overflow-hidden transition-all duration-300`;
+            noteNode.innerHTML = `
+                <p class="text-xs text-amber-955 font-bold leading-relaxed">${text}</p>
+                <span class="block text-[10px] text-amber-900/40 mt-2">創建於 ${timeStr}</span>
+            `;
+
+            notesList.insertBefore(noteNode, notesList.firstChild);
+            input.value = '';
+            showToast('💾 筆記已寫入竹簡！');
+        }
+
+        // 8. 幫助視窗開關
+        function toggleHelpModal(show) {
+            const modal = document.getElementById('help-modal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // 9. 自訂彈窗提示 (Toast)
+        function showToast(message) {
+            const toast = document.getElementById('custom-toast');
+            const msgSpan = document.getElementById('toast-msg');
+            msgSpan.innerText = message;
+            
+            toast.classList.remove('hidden');
+            toast.style.opacity = '1';
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
